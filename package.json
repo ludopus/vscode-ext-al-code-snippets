@@ -1,0 +1,41 @@
+{
+  "name": "ludopus-al-code-snippets",
+  "displayName": "Ludopus AL Code Snippets",
+  "description": "Adds a new list of code snippets for projects written in AL.",
+  "version": "0.0.1",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ludopus/vscode-ext-al-code-snippets"
+  },
+  "bugs": {
+    "email": "support@ludopus.de"
+  },
+  "publisher": "LudopusGmbH",
+  "icon": "images/LudopusIcon.png",
+  "engines": {
+    "vscode": "^1.84.0"
+  },
+  "categories": [
+    "Snippets"
+  ],
+  "keywords": [
+    "AL",
+    "AL Extensions",
+    "AL Code Snippets",
+    "Business Central",
+    "CSIDE",
+    "Dynamics NAV",
+    "Snippets",
+    "Code Snippets"
+  ],
+  "contributes": {
+    "snippets": [
+      {
+        "language": "al",
+        "path": "./snippets/al.code-snippets"
+      }
+    ]
+  }
+}
+ 
