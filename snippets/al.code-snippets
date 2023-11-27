@@ -98,7 +98,7 @@
             "end;",
         ],
         "description": "Creates an EvenSubscriber for company initialize to setup the extension"
-    }
+    },
 	"LUD ToDo BC22": {
 		"prefix": "LUDToDoBC22",
 		"scope": "al",
@@ -120,6 +120,106 @@
             "		exit;",
 			"end;"
 		],
-		"description": "",
+		"description": "Creates a handled pattern for procedures",
+	},
+	"LUD Source Code Setup Table Extension": {
+		"prefix": "LUDSourceCodeSetupTableExtension",
+		"scope": "al",
+		"body": [
+			"tableextension $1 $2 extends \"Source Code Setup\"",
+			"{",
+			"	fields",
+			"	{",
+			"		field($1; $3; Code[10])",
+			"		{",
+			"			Caption = '$3';",
+			"			TableRelation = \"Source Code\";",
+			"		}",
+			"	}",
+			"}",
+		],
+		"description": "Creates the table extension for the source code setup table",
+	},
+	"LUD AssistEdit Procedure": {
+		"prefix": "LUDAssistEditProcedure",
+		"scope": "al",
+		"body": [
+			"procedure AssistEdit(OldRec: Record ${1:Record Name}) Result: Boolean",
+			"var",
+			"    TmpRec: Record ${1:Record Name};",
+			"    IsHandled: Boolean;",
+			"begin",
+			"    IsHandled := false;",
+			"    OnBeforeAssistEdit(TmpRec, OldRec, Result, IsHandled);",
+			"    if IsHandled then",
+			"        exit;",
+			" ",
+			"    TmpRec.Copy(Rec);",
+			"    ${2:Name of Setup Table}.GetOnce();",
+			"    ${2:Name of Setup Table}.TestField(${3:Name of No. Series});",
+			"    if NoSeriesMgt.SelectSeries(${2:Name of Setup Table}.${3:Name of No. Series}, OldRec.\"No. Series\", TmpRec.\"No. Series\") then begin",
+			"        NoSeriesMgt.SetSeries(TmpRec.\"No.\");",
+			"        TmpRec.Validate(\"No.\");",
+			"        Rec := TmpRec;",
+			"        exit(true);",
+			"    end;",
+			"end;"
+		],
+		"description": "Creates an AssistEdit Procedure which handles the number assignment for new records"
+	},
+	"LUD No., No. Series Table Fields": {
+		"prefix": "LUDNoAndNoSeriesTableFields",
+		"scope": "al",
+		"body": [
+			"field(1; \"No.\"; Code[20])",
+			"{",
+			"    Caption = 'No.';",
+			" ",
+			"    trigger OnValidate()",
+			"    begin",
+			"        if \"No.\" <> xRec.\"No.\" then begin",
+			"            ${1:Setup Table Name}.GetOnce();",
+			"            ${1:Setup Table Name}.TestField(${2:Number Series});",
+			"            NoSeriesMgt.TestManual(${1:Setup Table Name}.${2:Number Series});",
+			"            \"No. Series\" := '';",
+			"        end;",
+			"    end;",
+			"}"
+			"field(25; \"No. Series\"; Code[20])",
+			"{",
+			"    Caption = 'No. Series';",
+			"    Editable = false;",
+			"    TableRelation = \"No. Series\";",
+			"}"
+		],
+		"description": "Creates the field No. and No. Series and initializes it with the OnValidate trigger and table relation"
+	  },
+	"LUD Blocked Fields": {
+		"prefix": "LUDBlockedFields",
+		"scope": "al",
+		"body": [
+			"field(21; Blocked; Boolean)",
+			"{",
+			"    Caption = 'Blocked';",
+			" ",
+			"    trigger OnValidate()",
+			"    begin",
+			"        if not Blocked then",
+			"            \"Block Reason\" := '';",
+			"    end;",
+			"}",
+			" ",
+			"field(22; \"Block Reason\"; Text[250])",
+			"{",
+			"    Caption = 'Block Reason';",
+			" ",
+			"    trigger OnValidate()",
+			"    begin",
+			"        if \"Block Reason\" <> '' then",
+			"            TestField(Blocked, true);",
+			"    end;",
+			"}"
+		],
+		"description": "Creates the fields Blocked and Blocked Description with the OnValidate trigger"
 	}
 }
